@@ -1,0 +1,82 @@
+.Auth {
+    margin: 20px auto;
+    width: 80%;
+    text-align: center;
+    box-shadow: 0 2px 3px #ccc;
+    border: 1px solid #eee;
+    box-sizing: border-box;
+}
+
+.AuthBGColorDuringSignIn {
+    background-color: darkslategray;
+}
+
+
+.AuthBGColorDuringSignUp {
+    background-color: tomato;
+}
+
+.Title {
+    color:wheat;
+    line-height: 2.5em;
+    margin: 10px auto;
+    font-weight: bold;
+}
+
+.ErrorMsg {
+color:red;
+}
+
+.InfoMsg {
+color:wheat;
+}
+
+.Tab {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.SignInTab {
+    color:wheat;
+    display: flex;
+    flex-flow: column;
+    width: 50%;
+    padding: 10px 10px 10px 10px;
+    border-bottom: none;
+    justify-items: space-evenly;
+    background-color: darkslategray;
+}
+
+.SignInTab:hover {
+    cursor: pointer;
+}
+
+.SignUpTab {
+    color:wheat;
+    display: flex;
+    flex-flow: column;
+    width: 50%;
+    padding: 10px 10px 10px 10px;
+    border-bottom: none;
+    justify-items: space-evenly;
+    background-color: tomato;
+}
+
+.SignUpTab:hover {
+    cursor: pointer;
+}
+
+/* 
+.SignTabActive {
+    color: wheat;
+    background-color: transparent;
+    text-align: center;
+} */
+
+
+@media (min-width: 600px) {
+    .Auth {
+        width: 500px;
+    }
+}

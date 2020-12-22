@@ -8,7 +8,7 @@ import Spinner from '../components/UI/Spinner/Spinner';
 import classes from './Auth.module.css';
 import * as actions from '../store/actions/index';
 import { updateObject, checkValidity } from '../shared/utility';
-
+ 
 const SIGNUP_TXT = "First time user?. Please sign up.";
 const SIGNIN_TXT = "Already have account with us?.  Sign In !!!"
 

@@ -90,14 +90,16 @@ export const auth = (email, password, isSignup) => {
     
             user.authenticateUser(authDetails, {
                 onSuccess: response => {
-                    const expirationDate = new Date(new Date().getTime() + 3600000); //30 min TTL //response.accessToken.payload.exp);
-                    const authenticatedUserId = response.accessToken.payload.username;
+                    console.log(response);
+                    console.log(response.idToken.jwtToken);
+                    const expirationDate = new Date(new Date().getTime() + 3600000); //30 min TTL //response.idToken.payload.exp);
+                    const authenticatedUserId = response.idToken.payload.sub;
 
-                    localStorage.setItem('token', response.accessToken.jwtToken);
+                    localStorage.setItem('token', response.idToken.jwtToken);
                     localStorage.setItem('expirationDate', expirationDate);
                     localStorage.setItem('userId', authenticatedUserId);
                     
-                    dispatch(authSuccess(response.accessToken.jwtToken, authenticatedUserId, ''));
+                    dispatch(authSuccess(response.idToken.jwtToken, authenticatedUserId, ''));
                     dispatch(checkAuthTimeout((expirationDate.getTime() - new Date().getTime()) ));
 
                 },

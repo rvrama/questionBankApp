@@ -12,7 +12,7 @@ const Groups = (props) => {
     // }
     useEffect(() => {
         props.OnLoadGroups();
-    },[props]);
+    },[]);
 
 
     // OnGroupItemClicked = (grpId) => {

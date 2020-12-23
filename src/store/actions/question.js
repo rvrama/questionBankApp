@@ -59,11 +59,18 @@ export const setSelectedGroupId = (groupId) => {
 
 export const loadQuestions = (grpId) => {
     return dispatch => {
-        axios.get("https://0wy6yu5dy5.execute-api.ap-south-1.amazonaws.com/Stage/questions")
+        axios.get("https://0wy6yu5dy5.execute-api.ap-south-1.amazonaws.com/Stage/questions",
+                    { 
+                        headers: { 
+                                    "Authorization": localStorage.getItem("token") 
+                                }
+                    })
         .then(resp => {
+            console.log(resp.data);
             dispatch(loadQuestionsSuccess(resp.data, grpId));  //until we pass this in URL to filter in API itself
             })
         .catch(err => {
+            console.log(err);
             dispatch(loadQuestionsFailed(err));
         }); 
     }

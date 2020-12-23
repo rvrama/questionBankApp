@@ -58,6 +58,7 @@ export const auth = (email, password, isSignup) => {
         {
             UserPool.signUp(email, password, [], null, (err, response) => {
                 if (err) {
+                    console.log(err);
                     dispatch(authFail(err));
                 }
                 else {

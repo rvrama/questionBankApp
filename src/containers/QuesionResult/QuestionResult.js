@@ -138,6 +138,7 @@ class QuestionResult extends Component {
                     ctr = ctr + 1;
 
                     return (<QuestionResultRender 
+                                key={ctr}
                                 questionId={ctr}
                                 questionTxt={f.questionTxt}
                                 optionsTxt={options}/>);

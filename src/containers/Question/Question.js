@@ -7,13 +7,15 @@ import SummaryBar from '../../components/UI/SummaryBar/SummaryBar';
 import Modal from '../../components/UI/Modal/Modal';
 import Button from '../../components/UI/Button/Button';
 import { connect } from 'react-redux';
-import * as actions from '../../store/actions/index';
+import Spinner from './../../components/UI/Spinner/Spinner';
+import QuestionRender from './../../components/RenderSupport/QuestionRender';
+import QuestionContentRender from '../../components/RenderSupport/QuestionContentRender';
 
+import * as actions from '../../store/actions/index';
 
 class Question extends Component {
     state = {
-        message : '',
-        groupedQuestionsList : null
+        message : ''
     }
 
 
@@ -110,24 +112,23 @@ class Question extends Component {
 
         if (this.props.results.length > 0){
             arr = [...this.props.results];
-        const updateResultArrObj = arr.find(f => (f.id === this.props.questionId));
+           const updateResultArrObj = arr.find(f => (f.id === this.props.questionId));
+            if (updateResultArrObj){
+                (choiceButtonType === "1") 
+                    ? updateResultArrObj.selected = selectedChoiceIndex 
+                    : (updateResultArrObj.selected === "" || !updateResultArrObj.selected) ?
+                            updateResultArrObj.selected = selectedChoiceIndex
+                            : updateResultArrObj.selected = this.CheckSelectedUtil(updateResultArrObj.selected,
+                                                            selectedChoiceIndex);
 
-        if (updateResultArrObj){
-            (choiceButtonType === "1") 
-                ? updateResultArrObj.selected = selectedChoiceIndex 
-                : (updateResultArrObj.selected === "" || !updateResultArrObj.selected) ?
-                        updateResultArrObj.selected = selectedChoiceIndex
-                        : updateResultArrObj.selected = this.CheckSelectedUtil(updateResultArrObj.selected,
-                                                        selectedChoiceIndex);
-
-            arr.splice(this.props.questionId - 1, 1, updateResultArrObj);
-            this.props.OnUpdateResults(arr);
-        }
-        else{
-            arr.push({id:this.props.questionId, 
-                    answer:this.props.questionList[this.props.questionId - 1].answerChoiceId, 
-                    selected : selectedChoiceIndex});
-            this.props.OnAddResults(arr);
+                arr.splice(this.props.questionId - 1, 1, updateResultArrObj);
+                this.props.OnUpdateResults(arr);
+            }
+            else{
+                arr.push({id:this.props.questionId, 
+                        answer:this.props.questionList[this.props.questionId - 1].answerChoiceId, 
+                        selected : selectedChoiceIndex});
+                this.props.OnAddResults(arr);
             }
         }
         else{
@@ -181,18 +182,17 @@ class Question extends Component {
     }
 
     render() {
-        console.log(this.props.questionList);
+
+        let errorMsg;
+
         if (this.props.isAuthenticated) { //loggedIn
-
             let showButtons;
-
             if (this.props.showResult){
                 const res = [...this.props.results];
                 const message = this.setResultMessage(res, (this.props.questionList) ? this.props.questionList.length : 0);
-
                 return (
                     <Modal show={this.props.showResult} modalClosed={this.cancelShowResultHandler}>
-                        <h1>Results</h1>
+                        <h1 style={{backgroundColor:'coral'}}>Results</h1>
                         <h3>{message}</h3>
                         <h4>Do you want to see the details?</h4>
                         <Button btnType="Success" clicked={this.ShowResultViewHandler}>Show Result</Button>
@@ -201,89 +201,81 @@ class Question extends Component {
             }
             else
             {
-            let options = '';
-            let question = <h5>Questions getting Loaded</h5>
-            let summary = "";
+                let options = '';
+                let question = <Spinner />;
+                let summary = "";
 
-            if (this.props.results.length >0){
-            summary = this.props.results.map(o => {
-                const q = "Q" + o.id;
-                return (
-                <SummaryBar 
-                key={o.id} 
-                quesLink={q} 
-                click={() => this.NavButtonClickHandler(o.id)}/>
-                );
-            })
-            }   
-            else{
-                summary = <SummaryBar  
-                    quesLink="Attempted question(s) will appear here."/>;
-            }
+                if (this.props.results.length >0){
+                    
+                    summary = this.props.results.map(o => {
+                        const q = "Q" + o.id;
+                        return (
+                        <SummaryBar 
+                        key={o.id} 
+                        quesLink={q} 
+                        click={() => this.NavButtonClickHandler(o.id)}/>
+                        );
+                    })
+                 }   
+                else{
+                    summary = <SummaryBar  
+                        quesLink="Attempted question(s) will appear here."/>;
+                 }
 
-            if (this.props.questionList){        
-                const currentQuestion = this.props.questionList[this.props.questionId - 1];
-
-                question = 
-                (
-                    <div>
-                    <h1 className={classes.Msg}>{this.state.message}</h1>
-                    <div className={classes.Qtnscreen}>
-                    <div>
-                    <span className={classes.QtnTxt}> {this.props.questionId}. {currentQuestion.questionTxt}</span>
-                    </div>
-                    </div>
-                    </div>
-                );
+                if (this.props.questionList){        
+                    const currentQuestion = this.props.questionList[this.props.questionId - 1];
+                    question = 
+                    (
+                        <QuestionRender
+                            key={this.props.questionId} 
+                            message={this.state.message} 
+                            questionId={this.props.questionId} 
+                            questionTxt={currentQuestion.questionTxt} />
+                    );
 
                     let pSelected = null;
+        
                     if (this.props.isPrevButtonClicked && this.props.results[this.props.questionId - 1]) {
-                    pSelected = this.props.results[this.props.questionId - 1].selected;
-
+                        pSelected = this.props.results[this.props.questionId - 1].selected;
                     }
 
-                    options = (<div className={classes.Choices}><Choices 
-                            answerChoiceId={currentQuestion.answerChoiceId}
-                            OptionSelected= {(event) => this.OptionSelected(event)}
-                            optionsList = {currentQuestion.choices.split(',')}
-                            choiceType = {currentQuestion.choiceType}
-                            prevSelectedData = {pSelected}
-                            questionId = {this.props.questionId}
-                            /></div>); 
+                    options = (<div className={classes.Choices}>
+                                <Choices
+                                    key={this.props.questionId}
+                                    answerChoiceId={currentQuestion.answerChoiceId}
+                                    OptionSelected= {(event) => this.OptionSelected(event)}
+                                    optionsList = {currentQuestion.choices.split(',')}
+                                    choiceType = {currentQuestion.choiceType}
+                                    prevSelectedData = {pSelected}
+                                    questionId = {this.props.questionId}
+                                />
+                                </div>); 
                 
 
-                showButtons = (<PrevNextButton prevButtonClick={this.QuestionPreviousHandler} 
-                    nextButtonClick={() => this.QuestionNextHandler()}
-                    />);
-        
-                if (this.props.questionId >= this.props.questionList.length){
-                    showButtons = <SubmitButton 
-                                    click={() => this.SubmitButtonClickHandler()}>Submit</SubmitButton>
-                }
-            }
-            else  { //if questionList is empty
-               question = <div className={classes.ErrorMsg}>Questions Loading failed...  Please check if you have proper access or contact the administrator.</div>;
-            }
-            return (
-                <div className={classes.Displaybar}>
-                <div className={classes.Navbar}>{summary}</div>
-                <div className={classes.Screenbar}>
-                {question}
-            <div style={{padding:'10px 10px 10px 10px', color:'white'}}> Choices are :</div>
-            <div>
-                {options}
-                </div>
-                <div>
-                {showButtons}
-                </div>
-                </div>   
-                </div>
-            );
+                    showButtons = (<PrevNextButton prevButtonClick={this.QuestionPreviousHandler} 
+                        nextButtonClick={() => this.QuestionNextHandler()}
+                        />);
             
-        
-        }   
+                    if (this.props.questionId >= this.props.questionList.length){
+                        showButtons = <SubmitButton 
+                                        click={() => this.SubmitButtonClickHandler()}>Submit</SubmitButton>
+                    }
+                }
+                else  { //if questionList is empty
+                    errorMsg = <div className={classes.ErrorMsg}>Questions Loading failed...  Please check if you have proper access or contact the administrator.</div>;
+                }
+                return (
+                    <QuestionContentRender 
+                        summary={summary}
+                        errorMsg={errorMsg}
+                        question={question}
+                        options={options}
+                        showButtons={showButtons}/>
+
+                );
+            }   
              
-    }
+        }
       
     }
 }           

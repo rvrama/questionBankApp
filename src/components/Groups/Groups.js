@@ -6,44 +6,33 @@ import {withRouter} from 'react-router-dom';
 import * as actions from '../../store/actions/index';
 
 const Groups = (props) => {
+    const { OnLoadGroups } = props;
 
-    // componentDidMount() {
-    //     this.props.OnLoadGroups();
-    // }
     useEffect(() => {
-        props.OnLoadGroups();
-    },[]);
+        OnLoadGroups();
+    },[OnLoadGroups]);
 
+    let groupDetails;
 
-    // OnGroupItemClicked = (grpId) => {
-    //     this.props.OnSetSelectedGroupId(grpId);
-    //     //set the group name selected in the store
-    //     //for now pass in query param
-    //     this.props.history.push('/question');
+    if (props.groupsList){
+        groupDetails = props.groupsList.Items.map((grp,index) => {
+            return <Group 
+                key={grp.GroupId}
+                groupName={grp.GroupName} 
+                countByGroup={props.isAuthenticated ? '('+ grp.QuestionsCount + ')' : null}
+                groupSummary={grp.GroupSummary}
+                click={(grpName) => props.groupClicked(grp.GroupId)}/>    
+        });
+    }
+    else{
+        groupDetails =<div><h5>{props.error ? props.error.message : ''}</h5><span>. Group details not available. Check after some time!!!</span></div>
+    }
 
-    // }
-
-        let groupDetails;
-
-        if (props.groupsList){
-            groupDetails = props.groupsList.Items.map((grp,index) => {
-               return <Group 
-                    key={grp.GroupId}
-                    groupName={grp.GroupName} 
-                    countByGroup={props.isAuthenticated ? '('+ grp.QuestionsCount + ')' : null}
-                    groupSummary={grp.GroupSummary}
-                    click={(grpName) => props.groupClicked(grp.GroupId)}/>    
-            });
-        }
-        else{
-            groupDetails =<div><h5>{props.error ? props.error.message : ''}</h5><span>. Group details not available. Check after some time!!!</span></div>
-        }
-
-        return (
-            <div className={classes.Groups}>
-                {groupDetails}
-            </div>
-        );
+    return (
+        <div className={classes.Groups}>
+            {groupDetails}
+        </div>
+    );
    }
 
 const mapStateToProps = state => {
@@ -60,4 +49,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default (connect(mapStateToProps, mapDispatchToProps) (withRouter(Groups)));
+export default (connect(mapStateToProps, mapDispatchToProps) (withRouter(Groups)));  //withRouter is not requird but kept it to show the way we can use connect and withRouter :)

@@ -20,14 +20,11 @@ export const loadQuestionsFailed = (err) => {
 export const loadQuestionsSuccess = (data, grpId) => {
     let filteredData = data.Items.filter(f => f.GroupId === grpId);
     filteredData = (filteredData.length > 0) ? filteredData :null;
-    console.log("Filter", filteredData);
     return {
         type:actionTypes.LOAD_QUESTIONS_SUCCESS,
         questionList : filteredData
     }
 }
-
-
 
 export const loadGroupsFailed = (err) => {
     return {
@@ -66,11 +63,9 @@ export const loadQuestions = (grpId) => {
                                 }
                     })
         .then(resp => {
-            console.log(resp.data);
             dispatch(loadQuestionsSuccess(resp.data, grpId));  //until we pass this in URL to filter in API itself
             })
         .catch(err => {
-            console.log(err);
             dispatch(loadQuestionsFailed(err));
         }); 
     }
@@ -88,16 +83,12 @@ export const loadGroups = () => {
     }
 }
 
-
-
-
 export const addResults = (results) => {
     return {
         type:actionTypes.ADD_RESULTS,
         results : results
     }
 }
-
 
 export const updateResults = (results) => {
     

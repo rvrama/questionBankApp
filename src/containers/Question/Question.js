@@ -151,6 +151,10 @@ class Question extends Component {
     }
 
     SubmitButtonClickHandler = () => {
+        //store the results in the backend
+        this.props.OnStoreResultsOnSubmit(this.props.userId, 
+                                        this.props.selectedGroupId, 
+                                        this.props.results);
         this.props.OnShowResults();
     }
     
@@ -288,6 +292,7 @@ const mapStateToProps = state => {
         token: state.auth.token,
         userId: state.auth.userId,
         authRedirectPath: state.auth.authRedirectPath,
+
         questionError : state.question.error,       
         questionId :state.question.questionId,
         selected: state.question.selected,// Not used
@@ -295,7 +300,9 @@ const mapStateToProps = state => {
         results : state.question.results,//
         questionList : state.question.questionList,//
         isPrevButtonClicked : state.question.isPrevButtonClicked,
-        selectedGroupId : state.question.selectedGroupId
+        selectedGroupId : state.question.selectedGroupId,
+
+        attempts : state.result.attempts        
     };
 };
 
@@ -312,7 +319,8 @@ const mapDispatchToProps = dispatch => {
         OnSetQuestionId : (id) => dispatch(actions.setQuestionId(id)),
         OnSetPrevButtonClicked : () => dispatch(actions.setPrevButtonClickFlag()),
         OnResetPrevButtonClicked : () => dispatch(actions.resetPrevButtonClickFlag()),
-        OnResetResultsOnLoad : () => dispatch(actions.resetResultsOnLoad())
+        OnResetResultsOnLoad : () => dispatch(actions.resetResultsOnLoad()),
+        OnStoreResultsOnSubmit : (userId, groupId, attempts) => dispatch(actions.storeResults(userId, groupId, attempts))
     }
 }
 

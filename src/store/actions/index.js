@@ -19,3 +19,8 @@ export {
     loadGroups,
     setSelectedGroupId
 } from './question';
+
+export {
+    loadResults,
+    storeResults
+} from './result';

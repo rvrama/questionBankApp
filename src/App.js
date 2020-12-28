@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classes from './App.module.css';
 import Question from './containers/Question/Question';
-import QuestionResult from './containers/QuesionResult/QuestionResult';
+//import QuestionResult from './containers/QuesionResult/QuestionResult';
 import {Route, withRouter, Switch, Redirect} from 'react-router-dom';
 import Auth from './Auth/Auth';
 import Logout from './Auth/Logout';
@@ -11,6 +11,8 @@ import Bound from './hoc/Bound';
 import Toolbar from './components/Navigation/Toolbar/Toolbar';
 import SideDrawer from './components/Navigation/SideDrawer/SideDrawer';
 import Home from './components/Home/Home';
+import Results from './containers/Results/Results';
+
 class App extends Component {
   // state ={
   //   LoginURL : 'https://cogvenkat.auth.ap-south-1.amazoncognito.com/login?client_id=2f8a0j3145j4lb91bu18kej0s1&response_type=code&scope=openid&redirect_uri=http://localhost:3000/oauth2/idpresponse',
@@ -69,7 +71,7 @@ sideDrawerToggleHandler = () => {
      routes = (<Switch>
           <Route path="/question" exact component={Question} />;
           <Route path="/logout" component={Logout} />
-          <Route path="/result" component={QuestionResult} />
+          <Route path="/result" component={Results} />
           <Route path="/auth" component={Auth} />
           <Route path="/" component={Home} />
           <Redirect to="/" />

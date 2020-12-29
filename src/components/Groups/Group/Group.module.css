@@ -1,15 +1,67 @@
 
-.Group{
+.NotAttempted{
     display: flex;
     background-color: darkslategray;
     color:wheat;
     margin:10px 10px 10px 10px;
 }
 
-.GroupName:hover{
+.NotAttempted:hover{
     cursor: pointer;
     color:tomato;
     }
+
+.AttemptedOnce{
+    display: flex;
+    background-color: green;
+    color:wheat;
+    margin:10px 10px 10px 10px;
+}
+
+.AttemptedOnce:hover{
+    cursor: pointer;
+    color:tomato;
+    }
+
+.MaxAttempted{
+    display: flex;
+    background-color:coral;
+    color:wheat;
+    margin:10px 10px 10px 10px;
+}
+
+.MaxLabelAttempts{
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    font-size:6pt;
+    color:white;
+    border: 1pt solid black;
+    background-color: brown;
+    text-align: center;
+    font-weight: bold;
+}
+
+.OnceLabelAttempts{
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    font-size:6pt;
+    color:black;
+    font-weight: bold;
+    border: 1pt solid black;
+    background-color:mediumseagreen;
+    text-align: center;
+}
+
+.NoLabelAttempts{
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    font-size:6pt;
+    color: black;
+    border: 1pt solid black;
+    background-color:gray;
+    text-align: center;
+    font-weight: bold;
+}
 
 .GroupName{
     margin: 1px 10px 10px 10px;

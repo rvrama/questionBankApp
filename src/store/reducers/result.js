@@ -2,18 +2,17 @@ import * as actionTypes from '../actions/actionType';
 import { updateObject } from '../../shared/utility';
 
 const initialState = {
-    userId: '',
-    groupId:'',
-    results : []
+    results : null,
+    error : null
 }
 
 const loadResultsSuccess = (state, action) => {
     return updateObject(state, 
-                { attempts: action.attempts });
+                { results: action.resultData });
 }
 
 const loadResultsFailed = (state, action) => {
-    return updateObject(state, action);
+    return updateObject(state, {error: action.err, results : action.resultData});
 }
 
 const storeResultsSuccess = (state, action) => {

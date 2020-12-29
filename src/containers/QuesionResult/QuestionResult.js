@@ -108,6 +108,9 @@ class QuestionResult extends Component {
 
 
     render() {
+        console.log(this.props.results);
+        console.log(this.props.questionList);
+        
         if (this.props.isAuthenticated) {
             let ctr = 0;
             let questionList = '';
@@ -161,8 +164,8 @@ class QuestionResult extends Component {
 const mapStateToProps = state => {
     return {
         isAuthenticated: state.auth.token !== null,
-        results: state.question.results,//
-        questionList: state.question.questionList,//
+     //   results: state.question.results,//
+     //   questionList: state.question.questionList,//
     };
 };
 

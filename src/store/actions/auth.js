@@ -58,7 +58,6 @@ export const auth = (email, password, isSignup) => {
         {
             UserPool.signUp(email, password, [], null, (err, response) => {
                 if (err) {
-                    console.log(err);
                     dispatch(authFail(err));
                 }
                 else {
@@ -91,8 +90,6 @@ export const auth = (email, password, isSignup) => {
     
             user.authenticateUser(authDetails, {
                 onSuccess: response => {
-                    console.log(response);
-                    console.log(response.idToken.jwtToken);
                     const expirationDate = new Date(new Date().getTime() + 3600000); //30 min TTL //response.idToken.payload.exp);
                     const authenticatedUserId = response.idToken.payload.sub;
 

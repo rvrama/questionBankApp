@@ -29,37 +29,54 @@ class Results extends Component {
     }
 
     render() {
-        console.log(this.props.userResults);
-        console.log(this.props.userId);
-        console.log(this.state.result);
-        console.log(this.props.questionList);
-        
         let resultsToShow;
-       // let groupInfo;
+        let finalResults;
+        let groupInfo;
+        let filteredUserResults;
 
-        if (this.props.userResults){
-            
-                resultsToShow = this.props.userResults.map(res => {
-                
-                
+        if (this.props.userResults && this.props.groupsList){
+                //go through the master lookup list of groups
+                finalResults = this.props.groupsList.Items.map(grpObj => {
+                    //filter the group data from userResults to show the result by Group
+                    filteredUserResults = this.props.userResults.filter(f=> f.groupId === grpObj.GroupId);            
 
-                return (
-                    <Result 
-                        key={res.id}
-                        showClicked={() => this.ShowResults(res.groupId, res.id)}
-                         groupId={res.groupId}
-                         id={res.id}
-                         userId={res.userId}
-                         showResults={this.state.showResults}
-                          result={this.state.result}
-                          questionList={this.props.questionList}
-                          selectedGroupIdCombination={this.state.groupMixId}/>
-                 )
-                   });
-
+                    if (filteredUserResults && filteredUserResults.length > 0){
+                        
+                        groupInfo = (
+                                    <div className={classes.GroupName}>
+                                    <div>{grpObj.GroupName}</div>
+                                    </div>)
+                        
+                        resultsToShow = filteredUserResults.map((res,index) => {
+                                return (
+                                    <Result 
+                                        key={res.id}
+                                        showClicked={() => this.ShowResults(res.groupId, res.id)}
+                                        groupId={res.groupId}
+                                        id={res.id}
+                                        attemptId={index+1}
+                                        //userId={res.userId}
+                                        showResults={this.state.showResults}
+                                        result={this.state.result}
+                                        questionList={this.props.questionList}
+                                        selectedGroupIdCombination={this.state.groupMixId}/>
+                                    )
+                                });
+                            }
+                            else{
+                                groupInfo='';
+                                resultsToShow='';
+                            }
+                            return (
+                                <div className={classes.GroupBlock}>
+                                    {groupInfo}
+                                    {resultsToShow}
+                                </div>
+                            );
+                        });
         }
         return (<div className={classes.Results}>
-                    {resultsToShow}
+                    {finalResults}
                 </div>);
     }
 }

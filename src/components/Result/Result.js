@@ -19,16 +19,21 @@ const result = (props) => {
     }
 
     return (
-    <div className={classes.Result}>
-    <div>User ID : {props.userId}</div>
-    <div>Attempt Id : {props.id}</div>
-    <div>Group Id : {props.groupId}</div>
     <div>
+    <div className={classes.Result}>
+        <div>Attempt Id : {props.attemptId}</div>
+        <div>Last login : </div>
+        <div>Score: </div>
+        <div>Time taken: </div>
+        <div>
           <Button 
           btnType={(props.showResults && props.selectedGroupIdCombination === props.groupId+props.id) ? 'Danger' : 'Success'}
           clicked={props.showClicked}>
               {(props.showResults && props.selectedGroupIdCombination === props.groupId+props.id) ? 'Hide Results' : 'Show Results'}</Button>
-            {resultOutput}
+        </div>
+    </div>
+    <div>
+        {resultOutput}
     </div>
     </div>
     );

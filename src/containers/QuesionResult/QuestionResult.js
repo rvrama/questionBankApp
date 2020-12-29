@@ -108,8 +108,6 @@ class QuestionResult extends Component {
 
 
     render() {
-        console.log(this.props.results);
-        console.log(this.props.questionList);
         
         if (this.props.isAuthenticated) {
             let ctr = 0;

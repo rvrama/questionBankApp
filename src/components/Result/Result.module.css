@@ -6,4 +6,6 @@
     padding: 10pt 10pt 10pt 10pt;
     margin:10pt 10pt 10pt 10pt;
     box-sizing: border-box;
+    display:flex;
+    justify-content: space-between;
 }

@@ -1,4 +1,4 @@
 .Results{
     display:block;
-    border: 2pt solid crimson;
+    box-sizing: border-box;
 }

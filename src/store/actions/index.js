@@ -24,3 +24,7 @@ export {
     loadResults,
     storeResults
 } from './result';
+
+export {
+    setTimeSpent
+} from './timer';

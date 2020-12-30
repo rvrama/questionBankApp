@@ -22,9 +22,8 @@ const result = (props) => {
     <div>
     <div className={classes.Result}>
         <div>Attempt Id : {props.attemptId}</div>
-        <div>Last login : </div>
-        <div>Score: </div>
-        <div>Time taken: </div>
+        <div>Score: {props.score}</div>
+        <div>Time taken: {(((props.timeSpent)/1000)/60).toFixed(2)} minutes</div>
         <div>
           <Button 
           btnType={(props.showResults && props.selectedGroupIdCombination === props.groupId+props.id) ? 'Danger' : 'Success'}

@@ -3,4 +3,5 @@ body {
   padding: 0;
   font-family: sans-serif;
   background-color:  wheat;
+  background: linear-gradient(#f307d4, #c2518f);
 }

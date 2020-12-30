@@ -51,14 +51,16 @@ export const storeResultsSuccess = (data) => {
         //to inform user the id of the results created.
     }
 }
-
-export const storeResults = (userId, groupId, attempts) => {
+ 
+export const storeResults = (userId, groupId, attemptResults, timeSpent, score) => {
+    
     return dispatch => {
-//        dispatch(authStart());
         const resultData = {
             userId: userId,
             groupId: groupId,
-            results: attempts // should be an array containing attemptId, score, resultsArray
+            results: attemptResults, // should be an array containing attemptId, score, resultsArray
+            timeSpent : timeSpent,
+            score:score
         };
 
         const url = "https://qbresults-479ad-default-rtdb.firebaseio.com/results.json";        

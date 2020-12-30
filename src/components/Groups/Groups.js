@@ -13,7 +13,7 @@ const Groups = (props) => {
     useEffect(() => {
         OnLoadResultsOnMount(userId);
         OnLoadGroups();
-    },[OnLoadGroups, OnLoadResultsOnMount]);
+    },[OnLoadGroups, OnLoadResultsOnMount, userId]);
 
     let groupDetails;
 

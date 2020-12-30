@@ -10,12 +10,16 @@ import { connect } from 'react-redux';
 import Spinner from './../../components/UI/Spinner/Spinner';
 import QuestionRender from './../../components/RenderSupport/QuestionRender';
 import QuestionContentRender from '../../components/RenderSupport/QuestionContentRender';
+import Bound from './../../hoc/Bound';
+import Timer from './../../components/Timer/Timer';
 
 import * as actions from '../../store/actions/index';
 
 class Question extends Component {
     state = {
-        message : ''
+        message : '',
+        timelapse: false,
+        closeTimer : false
     }
 
 
@@ -151,14 +155,21 @@ class Question extends Component {
     }
 
     SubmitButtonClickHandler = () => {
+        this.setState({closeTimer:true});
+        const [, score] = this.setResultMessage(this.props.results, this.props.questionList.length);
+
         //store the results in the backend
         this.props.OnStoreResultsOnSubmit(this.props.userId, 
                                         this.props.selectedGroupId, 
-                                        this.props.results);
+                                        this.props.results,
+                                        this.props.timeSpent,
+                                        score);
         this.props.OnShowResults();
     }
     
     componentDidMount () {
+        this.setState({timelapse:false});
+        this.setState({closeTimer:true});
         this.props.OnResetResultsOnLoad();
         this.props.OnSetQuestionId(1); //to reset the ctr to 1 so that the Questions will appear from begining if user choose Question Nav from Results page or anywhere.
         this.props.OnLoadQuestions(this.props.selectedGroupId);        
@@ -167,22 +178,30 @@ class Question extends Component {
     setResultMessage = (result, questionsCount) => {
 
         const res = result;
-        const objisCorrect = res.filter(f => (f.answer === f.selected));
-    
-        const message = "You have " + objisCorrect.length 
-                        + " correct answer(s).  You have "
-                        + "scored " + ((objisCorrect.length/questionsCount)*100).toFixed(1) + "% ";
-        return message; 
+        const objIsCorrect = res.filter(f => (f.answer === f.selected));
+        const score = ((objIsCorrect.length/questionsCount)*100).toFixed(1);
+
+        return [objIsCorrect, score]; 
     }
 
     cancelShowResultHandler = () => {
         this.props.OnCancelShowResults();
     }
 
+    cancelTimerHandler= () => {
+        this.setState({timelapse:false});
+        this.setState({closeTimer:true});
+        this.props.history.push("/");
+    }
   
     ShowResultViewHandler = () => {
         this.props.OnCancelShowResults();
         this.props.history.replace("/result");
+    }
+
+    TimerRanOver = () => {
+        this.setState({timelapse:true});
+        this.setState({closeTimer:true});
     }
 
     render() {
@@ -190,95 +209,111 @@ class Question extends Component {
         let errorMsg;
 
         if (this.props.isAuthenticated) { //loggedIn
-            let showButtons;
-            if (this.props.showResult){
-                const res = [...this.props.results];
-                const message = this.setResultMessage(res, (this.props.questionList) ? this.props.questionList.length : 0);
-                return (
-                    <Modal show={this.props.showResult} modalClosed={this.cancelShowResultHandler}>
-                        <h1 style={{backgroundColor:'coral'}}>Results</h1>
-                        <h3>{message}</h3>
-                        <h4>Do you want to see the details?</h4>
-                        <Button btnType="Success" clicked={this.ShowResultViewHandler}>Show Result</Button>
-                    </Modal>
-                );
-            }
-            else
-            {
-                let options = '';
-                let question = <Spinner />;
-                let summary = "";
 
-                if (this.props.results.length >0){
-                    
-                    summary = this.props.results.map(o => {
-                        const q = "Q" + o.id;
-                        return (
-                        <SummaryBar 
-                        key={o.id} 
-                        quesLink={q} 
-                        click={() => this.NavButtonClickHandler(o.id)}/>
-                        );
-                    })
-                 }   
-                else{
-                    summary = <SummaryBar  
-                        quesLink="Attempted question(s) will appear here."/>;
-                 }
+            if (!this.state.timelapse) {
+                let showButtons;
+                if (this.props.showResult){
+                    const res = [...this.props.results];
 
-                if (this.props.questionList){        
-                    const currentQuestion = this.props.questionList[this.props.questionId - 1];
-                    question = 
-                    (
-                        <QuestionRender
-                            key={this.props.questionId} 
-                            message={this.state.message} 
-                            questionId={this.props.questionId} 
-                            questionTxt={currentQuestion.questionTxt} />
+                    const [objIsCorrect, score] = this.setResultMessage(res, (this.props.questionList) ? this.props.questionList.length : 0);
+
+                    const message = "You have " + objIsCorrect.length + " correct answer(s).  You have "
+                                    + "scored " + score + "% ";
+
+                    return (
+                        <Modal show={this.props.showResult} modalClosed={this.cancelShowResultHandler}>
+                            <h1 style={{backgroundColor:'coral'}}>Results</h1>
+                            <h3>{message}</h3>
+                            <h4>Do you want to see the details?</h4>
+                            <Button btnType="Success" clicked={this.ShowResultViewHandler}>Show Result</Button>
+                        </Modal>
                     );
+                }
+                else
+                {
+                    let options = '';
+                    let question = <Spinner />;
+                    let summary = "";
 
-                    let pSelected = null;
-        
-                    if (this.props.isPrevButtonClicked && this.props.results[this.props.questionId - 1]) {
-                        pSelected = this.props.results[this.props.questionId - 1].selected;
+                    if (this.props.results.length >0){
+                        
+                        summary = this.props.results.map(o => {
+                            const q = "Q" + o.id;
+                            return (
+                            <SummaryBar 
+                            key={o.id} 
+                            quesLink={q} 
+                            click={() => this.NavButtonClickHandler(o.id)}/>
+                            );
+                        })
+                    }   
+                    else{
+                        summary = <SummaryBar  
+                            quesLink="Attempted question(s) will appear here."/>;
                     }
 
-                    options = (<div className={classes.Choices}>
-                                <Choices
-                                    key={this.props.questionId}
-                                    answerChoiceId={currentQuestion.answerChoiceId}
-                                    OptionSelected= {(event) => this.OptionSelected(event)}
-                                    optionsList = {currentQuestion.choices.split(',')}
-                                    choiceType = {currentQuestion.choiceType}
-                                    prevSelectedData = {pSelected}
-                                    questionId = {this.props.questionId}
-                                />
-                                </div>); 
-                
+                    if (this.props.questionList){        
+                        const currentQuestion = this.props.questionList[this.props.questionId - 1];
+                        question = 
+                        (
+                            <QuestionRender
+                                key={this.props.questionId} 
+                                message={this.state.message} 
+                                questionId={this.props.questionId} 
+                                questionTxt={currentQuestion.questionTxt} />
+                        );
 
-                    showButtons = (<PrevNextButton prevButtonClick={this.QuestionPreviousHandler} 
-                        nextButtonClick={() => this.QuestionNextHandler()}
-                        />);
+                        let pSelected = null;
             
-                    if (this.props.questionId >= this.props.questionList.length){
-                        showButtons = <SubmitButton 
-                                        click={() => this.SubmitButtonClickHandler()}>Submit</SubmitButton>
-                    }
-                }
-                else  { //if questionList is empty
-                    errorMsg = <div className={classes.ErrorMsg}>Questions Loading failed...  Please check if you have proper access or contact the administrator.</div>;
-                }
-                return (
-                    <QuestionContentRender 
-                        summary={summary}
-                        errorMsg={errorMsg}
-                        question={question}
-                        options={options}
-                        showButtons={showButtons}/>
+                        if (this.props.isPrevButtonClicked && this.props.results[this.props.questionId - 1]) {
+                            pSelected = this.props.results[this.props.questionId - 1].selected;
+                        }
 
-                );
-            }   
-             
+                        options = (<div className={classes.Choices}>
+                                    <Choices
+                                        key={this.props.questionId}
+                                        answerChoiceId={currentQuestion.answerChoiceId}
+                                        OptionSelected= {(event) => this.OptionSelected(event)}
+                                        optionsList = {currentQuestion.choices.split(',')}
+                                        choiceType = {currentQuestion.choiceType}
+                                        prevSelectedData = {pSelected}
+                                        questionId = {this.props.questionId}
+                                    />
+                                    </div>); 
+                    
+
+                        showButtons = (<PrevNextButton prevButtonClick={this.QuestionPreviousHandler} 
+                            nextButtonClick={() => this.QuestionNextHandler()}
+                            />);
+                
+                        if (this.props.questionId >= this.props.questionList.length){
+                            showButtons = <SubmitButton 
+                                            click={() => this.SubmitButtonClickHandler()}>Submit</SubmitButton>
+                        }
+                    }
+                    else  { //if questionList is empty
+                        errorMsg = <div className={classes.ErrorMsg}>Questions Loading failed...  Please check if you have proper access or contact the administrator.</div>;
+                    }
+                    return (
+                        <Bound>
+                        <Timer availableTime={(this.props.questionList) ? this.props.questionList.length*60000 : 60000} 
+                                onTimeOut={this.TimerRanOver}
+                                closeTimer={this.state.closeTimer}/>
+                        <QuestionContentRender 
+                            summary={summary}
+                            errorMsg={errorMsg}
+                            question={question}
+                            options={options}
+                            showButtons={showButtons}/>
+                        </Bound>
+                    );
+                }   
+            }
+            else {
+                return (<Modal show={this.state.timelapse} modalClosed={this.cancelTimerHandler}>
+                    <h2> Exhausted your time limit!!!.  Your test is not submitted.</h2>
+                </Modal>);
+            }
         }
       
     }
@@ -302,7 +337,9 @@ const mapStateToProps = state => {
         isPrevButtonClicked : state.question.isPrevButtonClicked,
         selectedGroupId : state.question.selectedGroupId,
 
-        attempts : state.result.attempts        
+        attempts : state.result.attempts,   
+        
+        timeSpent : state.timer.timeInMilliSeconds        
     };
 };
 
@@ -320,7 +357,8 @@ const mapDispatchToProps = dispatch => {
         OnSetPrevButtonClicked : () => dispatch(actions.setPrevButtonClickFlag()),
         OnResetPrevButtonClicked : () => dispatch(actions.resetPrevButtonClickFlag()),
         OnResetResultsOnLoad : () => dispatch(actions.resetResultsOnLoad()),
-        OnStoreResultsOnSubmit : (userId, groupId, attempts) => dispatch(actions.storeResults(userId, groupId, attempts))
+        OnStoreResultsOnSubmit : (userId, groupId, attempts, timeSpent, score) => dispatch(actions.storeResults(userId, groupId, attempts, timeSpent, score))
+
     }
 }
 

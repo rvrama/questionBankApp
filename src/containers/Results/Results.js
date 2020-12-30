@@ -55,7 +55,8 @@ class Results extends Component {
                                         groupId={res.groupId}
                                         id={res.id}
                                         attemptId={index+1}
-                                        //userId={res.userId}
+                                        timeSpent = {res.timeSpent}
+                                        score={res.score}
                                         showResults={this.state.showResults}
                                         result={this.state.result}
                                         questionList={this.props.questionList}

@@ -10,13 +10,15 @@ import thunk from 'redux-thunk';
 import authReducer from './store/reducers/auth';
 import questionReducer from './store/reducers/question';
 import resultReducer from './store/reducers/result';
+import timerReducer from './store/reducers/timer';
 
 const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
 const rootReducer = combineReducers({
     question: questionReducer,
     auth: authReducer,
-    result : resultReducer
+    result : resultReducer,
+    timer : timerReducer
 });
 
 const store = createStore(rootReducer, composeEnhancers(

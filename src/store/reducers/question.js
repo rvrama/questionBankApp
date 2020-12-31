@@ -12,7 +12,8 @@ const initialState = {
     groupsList : null,
     error : null,
     isPrevButtonClicked : false,
-    selectedGroupId : null
+    selectedGroupId : null,
+    timeSpent:0
 };
 
 const updateQuestionId = (state, action) => {
@@ -84,6 +85,9 @@ const setSelectedGroupId = (state, action) => {
     return updateObject(state, { selectedGroupId: action.selectedGroupId })
 }
 
+const setTimeSpent = (state, action) => {
+    return updateObject(state, {timeSpent: action.timeSpent})
+}
 
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
@@ -101,6 +105,7 @@ const reducer = ( state = initialState, action ) => {
         case actionTypes.CURRENT_QUESTION_ID : return updateQuestionId(state, action);
         case actionTypes.RESET_RESULTS : return resetResults(state, action);
         case actionTypes.STORE_GROUP_SELECTED : return setSelectedGroupId(state, action);
+        case actionTypes.SET_TIMESPENT : return setTimeSpent(state, action);
         default:
             return state;
     }

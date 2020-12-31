@@ -30,7 +30,7 @@ const Groups = (props) => {
             groupsInfo =  <Group 
                 key={grp.GroupId}
                 groupName={grp.GroupName} 
-                countByGroup={props.isAuthenticated ? '('+ grp.QuestionsCount + ')' : null}
+                countByGroup={props.isAuthenticated ? grp.QuestionsCount : null}
                 groupSummary={grp.GroupSummary}
                 attempts="1"  //show groups in green
                 click={(grpName) => props.groupClicked(grp.GroupId)}/>    
@@ -39,7 +39,7 @@ const Groups = (props) => {
                 groupsInfo =  <Group 
                 key={grp.GroupId}
                 groupName={grp.GroupName} 
-                countByGroup={props.isAuthenticated ? '('+ grp.QuestionsCount + ')' : null}
+                countByGroup={props.isAuthenticated ? grp.QuestionsCount  : null}
                 groupSummary={grp.GroupSummary}
                 attempts="Max" //show groups in coral
                 />    
@@ -48,9 +48,9 @@ const Groups = (props) => {
                 groupsInfo =  <Group 
                 key={grp.GroupId}
                 groupName={grp.GroupName} 
-                countByGroup={props.isAuthenticated ? '('+ grp.QuestionsCount + ')' : null}
+                countByGroup={props.isAuthenticated ?  grp.QuestionsCount  : null}
                 groupSummary={grp.GroupSummary}
-                attempts="0" //show groups in darkslategrey
+                attempts={grp.QuestionsCount ? "0" : "NA"} //show groups in darkslategrey
                 click={(grpName) => props.groupClicked(grp.GroupId)}/>        
             }
             return groupsInfo;

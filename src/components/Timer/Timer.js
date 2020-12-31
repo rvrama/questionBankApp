@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import classes from './Timer.module.css';
-import * as actions from './../../store/actions/index';
 import { connect } from 'react-redux';
+import * as actions from './../../store/actions/index';
 
 const Timer = props => {
     const [HH, setHour] = useState(0); 
@@ -9,8 +9,7 @@ const Timer = props => {
     const [SS, setSeconds] = useState(0); 
     const [MS, setMilliSeconds] = useState(0);
 
-    useEffect(() => {
-       const myTimer =  setTimeout(() => {
+       setTimeout(() => {
             if (MM >=59){
                 setMin(0);
                 setHour(HH + 1);
@@ -24,14 +23,8 @@ const Timer = props => {
                 setMilliSeconds(MS + 1000);
             }
         },1000);
-        return () => {
-            clearTimeout(myTimer);
-        }
-    },[HH, MM, SS, MS, setHour, setMilliSeconds, setMin, setSeconds]);
 
-    if (props.closeTimer){
         props.OnSetTimeSpent(MS);
-    }
 
     const convertedTime = (props.availableTime) ? ((props.availableTime/1000)/60) : 'NA';
     if (props.availableTime < MS) {
@@ -46,11 +39,12 @@ const Timer = props => {
     );
 }
 
-const mapStateToProps = state => {
-    return {
-        timeSpent : state.timer.timeInMilliseconds        
-    };
-};
+// const mapStateToProps = state => {
+//     return {
+//         closeTimer : state.question.closeTimer,
+//         timeSpent : state.question.timeSpent
+//     };
+// };
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -58,4 +52,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (Timer);
+export default connect(null, mapDispatchToProps) (Timer);

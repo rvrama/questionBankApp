@@ -19,7 +19,7 @@ class Question extends Component {
     state = {
         message : '',
         timelapse: false,
-        closeTimer : false
+        timeSpent : 0
     }
 
 
@@ -28,14 +28,14 @@ class Question extends Component {
         if (this.props.isAuthenticated) {
 
             this.props.OnSetPrevButtonClicked();
-            if (this.props.questionId <= 1){
-                this.setState({message :"You are in First question."});
-            }
-            else {
+            //if (this.props.questionId <= 1){
+                //this.setState({message :"You are in First question."});
+           // }
+           // else {
                 let ctr = this.props.questionId - 1;
                 this.setState({message :""});
                 this.props.OnSetQuestionId(ctr);
-            }
+            //}
         }
         else {
             this.props.history.replace("/");
@@ -59,14 +59,9 @@ class Question extends Component {
                 this.props.OnResetPrevButtonClicked();
             }
 
-            if (this.props.questionId >= this.props.questionList.length){
-                this.setState({message :"You are in Last question."});
-            }
-            else{
-                let ctr = this.props.questionId + 1;
-                this.setState({message :""});
-                this.props.OnSetQuestionId(ctr);
-          }
+            let ctr = this.props.questionId + 1;
+            this.setState({message :""});
+            this.props.OnSetQuestionId(ctr);
           
         }
         else {
@@ -154,8 +149,14 @@ class Question extends Component {
         }
     }
 
+    // OnSetTimeSpent = (ms) =>{
+    //     console.log(ms);
+    //     this.setState({timeSpent:ms});
+    // }
+
     SubmitButtonClickHandler = () => {
-        this.setState({closeTimer:true});
+        //this.props.OnSubmissionSetCloseTimer();
+
         const [, score] = this.setResultMessage(this.props.results, this.props.questionList.length);
 
         //store the results in the backend
@@ -169,7 +170,7 @@ class Question extends Component {
     
     componentDidMount () {
         this.setState({timelapse:false});
-        this.setState({closeTimer:true});
+        //this.props.OnSubmissionResetCloseTimer();
         this.props.OnResetResultsOnLoad();
         this.props.OnSetQuestionId(1); //to reset the ctr to 1 so that the Questions will appear from begining if user choose Question Nav from Results page or anywhere.
         this.props.OnLoadQuestions(this.props.selectedGroupId);        
@@ -190,7 +191,7 @@ class Question extends Component {
 
     cancelTimerHandler= () => {
         this.setState({timelapse:false});
-        this.setState({closeTimer:true});
+        //this.props.OnSubmissionResetCloseTimer();
         this.props.history.push("/");
     }
   
@@ -201,7 +202,7 @@ class Question extends Component {
 
     TimerRanOver = () => {
         this.setState({timelapse:true});
-        this.setState({closeTimer:true});
+        //this.props.OnSubmissionSetCloseTimer();
     }
 
     render() {
@@ -249,7 +250,7 @@ class Question extends Component {
                     }   
                     else{
                         summary = <SummaryBar  
-                            quesLink="Attempted question(s) will appear here."/>;
+                            quesLink="Quick Links"/>;
                     }
 
                     if (this.props.questionList){        
@@ -282,7 +283,7 @@ class Question extends Component {
                                     </div>); 
                     
 
-                        showButtons = (<PrevNextButton prevButtonClick={this.QuestionPreviousHandler} 
+                        showButtons = (<PrevNextButton shouldShowPrevBtn = {this.props.questionId > 1} prevButtonClick={this.QuestionPreviousHandler} 
                             nextButtonClick={() => this.QuestionNextHandler()}
                             />);
                 
@@ -291,14 +292,11 @@ class Question extends Component {
                                             click={() => this.SubmitButtonClickHandler()}>Submit</SubmitButton>
                         }
                     }
-                    else  { //if questionList is empty
-                        errorMsg = <div className={classes.ErrorMsg}>Questions Loading failed...  Please check if you have proper access or contact the administrator.</div>;
-                    }
                     return (
                         <Bound>
                         <Timer availableTime={(this.props.questionList) ? this.props.questionList.length*60000 : 60000} 
                                 onTimeOut={this.TimerRanOver}
-                                closeTimer={this.state.closeTimer}/>
+                                />
                         <QuestionContentRender 
                             summary={summary}
                             errorMsg={errorMsg}
@@ -339,7 +337,7 @@ const mapStateToProps = state => {
 
         attempts : state.result.attempts,   
         
-        timeSpent : state.timer.timeInMilliSeconds        
+        timeSpent : state.question.timeSpent
     };
 };
 
@@ -357,7 +355,9 @@ const mapDispatchToProps = dispatch => {
         OnSetPrevButtonClicked : () => dispatch(actions.setPrevButtonClickFlag()),
         OnResetPrevButtonClicked : () => dispatch(actions.resetPrevButtonClickFlag()),
         OnResetResultsOnLoad : () => dispatch(actions.resetResultsOnLoad()),
-        OnStoreResultsOnSubmit : (userId, groupId, attempts, timeSpent, score) => dispatch(actions.storeResults(userId, groupId, attempts, timeSpent, score))
+        OnStoreResultsOnSubmit : (userId, groupId, attempts, timeSpent, score) => dispatch(actions.storeResults(userId, groupId, attempts, timeSpent, score)),
+        // OnSubmissionSetCloseTimer : () => dispatch(actions.setCloseTimer()),
+        // OnSubmissionResetCloseTimer : () => dispatch(actions.resetCloseTimer())
 
     }
 }

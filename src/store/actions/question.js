@@ -143,6 +143,14 @@ export const resetResultsOnLoad = () => {
     }
 }
 
+export const setTimeSpent = (ms) => {
+    return {
+        type: actionTypes.SET_TIMESPENT,
+        timeSpent : ms
+    }
+}
+
+
 //No need to reload the results or questions from localstorage upon refresh of page.
 //by design SPA will refresh the state on refresh of page.  Ideally I should store the results in database and retrieve it
 // which I am not doing here for now..

@@ -113,7 +113,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onTryAutoSignup: () => dispatch( actions.authCheckState() ),
-    //onTrySetDefaults: () => dispatch(actions.setDefaults())
   };
 };
 

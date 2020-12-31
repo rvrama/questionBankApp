@@ -17,7 +17,8 @@ export {
     setQuestionId,
     resetResultsOnLoad,
     loadGroups,
-    setSelectedGroupId
+    setSelectedGroupId,
+    setTimeSpent
 } from './question';
 
 export {
@@ -25,6 +26,3 @@ export {
     storeResults
 } from './result';
 
-export {
-    setTimeSpent
-} from './timer';

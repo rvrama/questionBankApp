@@ -22,7 +22,7 @@ const radioButton = (props) => {
             key={'R' + props.choiceid} 
             name={'R' + props.name}
             value={props.choiceid}
-            checked='true' 
+            checked 
             onClick={props.selected}
             />
             <span>{props.choiceid}. </span>

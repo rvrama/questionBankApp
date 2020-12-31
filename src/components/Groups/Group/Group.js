@@ -21,26 +21,22 @@ const group = (props) => {
                 cssClassName = classes.MaxAttempted; 
                 labelAttempts=<span className={classes.MaxLabelAttempts}>MAX TRIED</span>
                 break;
+        case "NA" : 
+                cssClassName = classes.NoQuestions;
+                labelAttempts=<span className={classes.NoQuestionsLabel}>NOT open</span>
+        break;
+
         default : cssClassName = '';  //should not reach here
     }
 
     let grp;
-    if (props.countByGroup) {
-        grp = (<div>
-                    <div onClick={props.click} className={classes.GroupName}>
-                        {props.groupName} {props.countByGroup}
-                    </div>
-                    <div className={classes.GroupSummary}>{props.groupSummary}</div>
-                </div>);
-    }
-    else {
-        grp = (<div>
-                    <div className={classes.GroupName}>{props.groupName}</div>
-                    <div className={classes.GroupSummary}>{props.groupSummary}</div>
-                </div>);
-    }
 
-    
+    grp = (<div>
+                <div onClick={(props.attempts === "NA" || props.attempts === "MAX") ? null : props.click} className={classes.GroupName}>
+                    {props.groupName} {props.countByGroup ? '('+ props.countByGroup + ')' : ''}
+                </div>
+                <div className={classes.GroupSummary}>{props.groupSummary}</div>
+            </div>);
     return (
         <div className={cssClassName}>
             {labelAttempts}
